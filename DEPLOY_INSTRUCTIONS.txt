@@ -1,0 +1,77 @@
+═══════════════════════════════════════════════════════════════
+  KGfG Teacher App - Deployment Instructions
+═══════════════════════════════════════════════════════════════
+
+FILES IN THIS FOLDER:
+--------------------
+✓ index.html  - Main application file
+✓ app.js      - All JavaScript functionality
+✓ styles.css  - All styling
+
+These 3 files are ALL you need to deploy your app!
+
+
+DEPLOYMENT OPTIONS:
+-------------------
+
+OPTION 1: NETLIFY DROP (EASIEST - RECOMMENDED)
+1. Go to: https://app.netlify.com/drop
+2. Drag and drop ALL 3 FILES into the browser window
+3. Your app will be live instantly at a URL like: yourapp.netlify.app
+4. To connect your GoDaddy domain:
+   - In Netlify: Settings → Domain Management → Add custom domain
+   - In GoDaddy: Go to DNS settings, update nameservers to Netlify's
+
+OPTION 2: CLOUDFLARE PAGES
+1. Go to: https://pages.cloudflare.com/
+2. Sign up for free account
+3. Upload the 3 files
+4. Connect your GoDaddy domain through Cloudflare DNS
+
+OPTION 3: VERCEL
+1. Go to: https://vercel.com
+2. Sign up for free account
+3. Upload the 3 files manually
+4. Connect your custom domain
+
+OPTION 4: TRADITIONAL FREE HOSTING
+Services like InfinityFree (infinityfree.net) or 000webhost:
+1. Sign up for free hosting
+2. Use File Manager or FTP to upload the 3 files
+3. Point your GoDaddy domain to their nameservers
+
+
+HOW TO CONNECT YOUR GODADDY DOMAIN:
+-----------------------------------
+Once you deploy to any service above:
+
+1. Log into GoDaddy.com
+2. Go to: My Products → Domains → Your Domain → DNS
+3. Update nameservers OR add A/CNAME records (your hosting will tell you which)
+4. Wait 24-48 hours for DNS propagation (usually faster)
+
+
+TESTING LOCALLY:
+----------------
+To test before deployment:
+1. Simply double-click index.html
+2. Or right-click → Open With → Chrome/Safari/Firefox
+
+
+LOGIN CREDENTIALS:
+------------------
+Teacher:
+  Username: teacher_user
+  Password: teacher2023#
+
+Students:
+  Username: firstname.lastname (e.g., emma.johnson)
+  Password: student123
+
+
+NEED HELP?
+----------
+If you have issues, check:
+- All 3 files are in the same folder
+- No other folders or files are needed
+- The app uses localStorage (works in all modern browsers)
