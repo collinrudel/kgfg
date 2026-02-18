@@ -148,8 +148,17 @@
 
             <!-- Teacher Books Page -->
             <div id="page-teacher-books" class="page">
-                <h2>Class Books</h2>
-                <div id="teacher-books-list"></div>
+                <h2>Books</h2>
+                <div class="teacher-books-tabs">
+                    <button class="teacher-books-tab active" data-tab="class-books">Class Books</button>
+                    <button class="teacher-books-tab" data-tab="favorites">Favorites</button>
+                </div>
+                <div id="class-books-tab" class="teacher-books-tab-content active">
+                    <div id="teacher-books-list"></div>
+                </div>
+                <div id="favorites-tab" class="teacher-books-tab-content">
+                    <div id="teacher-favorites-content"></div>
+                </div>
             </div>
 
             <!-- Badges Page -->
@@ -675,6 +684,33 @@
                 <button id="chart-detail-close" class="chart-detail-close-btn">&times;</button>
             </div>
             <div id="chart-detail-body" class="chart-detail-body">
+            </div>
+        </div>
+    </div>
+
+    <!-- Book Students Modal -->
+    <div id="book-students-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <h2 id="book-students-modal-title"></h2>
+            <div id="book-students-modal-list"></div>
+            <div class="modal-actions">
+                <button type="button" id="close-book-students-modal" class="cancel-btn">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recommend Book Modal -->
+    <div id="recommend-book-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <h2>Recommend Book</h2>
+            <div id="recommend-book-info"></div>
+            <div class="form-group">
+                <label><input type="checkbox" id="recommend-select-all" checked> Select All</label>
+            </div>
+            <div id="recommend-students-list" class="students-checkbox-list"></div>
+            <div class="modal-actions">
+                <button type="button" id="cancel-recommend" class="cancel-btn">Cancel</button>
+                <button type="button" id="submit-recommend" class="submit-btn">Recommend</button>
             </div>
         </div>
     </div>

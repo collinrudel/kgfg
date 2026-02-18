@@ -262,12 +262,39 @@ document.addEventListener('DOMContentLoaded', () => {
                 closeStudentLogReadingModal();
                 closeChartDetailModal();
                 closeEditChallengeModal();
+                closeRecommendModal();
+                closeBookStudentsModal();
             }
         });
     });
 
     // Chart detail modal close button
     document.getElementById('chart-detail-close').addEventListener('click', closeChartDetailModal);
+
+    // Book Students Modal
+    document.getElementById('close-book-students-modal').addEventListener('click', closeBookStudentsModal);
+
+    // Recommend Modal
+    document.getElementById('cancel-recommend').addEventListener('click', closeRecommendModal);
+    document.getElementById('submit-recommend').addEventListener('click', handleRecommendSubmit);
+    document.getElementById('recommend-select-all').addEventListener('change', (e) => {
+        document.querySelectorAll('#recommend-students-list input[type="checkbox"]')
+            .forEach(cb => cb.checked = e.target.checked);
+    });
+
+    // Teacher Books Page Tabs
+    document.querySelectorAll('.teacher-books-tab').forEach(tab => {
+        tab.addEventListener('click', (e) => {
+            const tabName = e.target.getAttribute('data-tab');
+            document.querySelectorAll('.teacher-books-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.teacher-books-tab-content').forEach(c => c.classList.remove('active'));
+            e.target.classList.add('active');
+            document.getElementById(`${tabName}-tab`).classList.add('active');
+            if (tabName === 'favorites') {
+                renderTeacherFavorites();
+            }
+        });
+    });
 
     // Month selector
     document.getElementById('month-selector').addEventListener('change', handleMonthChange);

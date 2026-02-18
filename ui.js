@@ -250,21 +250,71 @@ function getClassBooksData() {
                     author: book.author,
                     cover: book.cover,
                     readingCount: 0,
-                    finishedCount: 0
+                    finishedCount: 0,
+                    ratings: []
                 };
             }
             if (book.status === 'Reading') {
                 booksMap[key].readingCount++;
             } else if (book.status === 'Finished') {
                 booksMap[key].finishedCount++;
+                if (book.rating && book.rating > 0) {
+                    booksMap[key].ratings.push(book.rating);
+                }
             }
         }
     }
-    return Object.values(booksMap).sort((a, b) => {
+    const books = Object.values(booksMap);
+    books.forEach(book => {
+        book.avgRating = book.ratings.length > 0
+            ? book.ratings.reduce((sum, r) => sum + r, 0) / book.ratings.length
+            : null;
+    });
+    return books.sort((a, b) => {
         if (b.readingCount !== a.readingCount) return b.readingCount - a.readingCount;
         if (b.finishedCount !== a.finishedCount) return b.finishedCount - a.finishedCount;
         return a.title.localeCompare(b.title);
     });
+}
+
+function formatAvgRating(avgRating) {
+    if (avgRating === null) return 'N/A';
+    return avgRating.toFixed(1) + '/5';
+}
+
+function showBookStudentsPopup(bookTitle, statusFilter) {
+    const students = [];
+    for (const studentId in state.studentBooks) {
+        const book = state.studentBooks[studentId].find(b => b.title === bookTitle && b.status === statusFilter);
+        if (book) {
+            const student = state.students.find(s => s.id == studentId);
+            if (student) {
+                students.push({
+                    name: student.name,
+                    rating: statusFilter === 'Finished' && book.rating ? book.rating : null
+                });
+            }
+        }
+    }
+
+    const modal = document.getElementById('book-students-modal');
+    const titleEl = document.getElementById('book-students-modal-title');
+    const listEl = document.getElementById('book-students-modal-list');
+
+    titleEl.textContent = statusFilter === 'Reading'
+        ? `Students Reading "${bookTitle}"`
+        : `Students Who Finished "${bookTitle}"`;
+
+    listEl.innerHTML = students.length === 0
+        ? '<p>No students found.</p>'
+        : students.map(s => `
+            <div class="book-student-item">
+                <span>${s.name}</span>
+                ${s.rating ? `<span class="book-student-rating">${s.rating}/5</span>` : ''}
+            </div>
+        `).join('');
+
+    modal.classList.remove('hidden');
 }
 
 function renderTeacherBooksPage() {
@@ -285,24 +335,215 @@ function renderTeacherBooksPage() {
                         <th>Author</th>
                         <th>Currently Reading</th>
                         <th>Finished</th>
+                        <th>Avg Rating</th>
                     </tr>
                 </thead>
                 <tbody>
-                    ${books.map(book => `
+                    ${books.map(book => {
+                        const escapedTitle = book.title.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+                        return `
                         <tr>
                             <td class="teacher-book-title-cell">
                                 ${book.cover ? `<img src="${book.cover}" alt="${book.title}" class="teacher-book-cover">` : ''}
                                 <span>${book.title}</span>
                             </td>
                             <td>${book.author || 'Unknown'}</td>
-                            <td>${book.readingCount}</td>
-                            <td>${book.finishedCount}</td>
+                            <td>${book.readingCount > 0 ? `<span class="book-count-link" onclick="showBookStudentsPopup('${escapedTitle}', 'Reading')">${book.readingCount}</span>` : '0'}</td>
+                            <td>${book.finishedCount > 0 ? `<span class="book-count-link" onclick="showBookStudentsPopup('${escapedTitle}', 'Finished')">${book.finishedCount}</span>` : '0'}</td>
+                            <td>${formatAvgRating(book.avgRating)}</td>
                         </tr>
-                    `).join('')}
+                    `}).join('')}
                 </tbody>
             </table>
         </div>
     `;
+}
+
+// Teacher Favorites
+function renderTeacherFavorites() {
+    const contentEl = document.getElementById('teacher-favorites-content');
+    const favoritesHtml = state.teacherFavorites.length === 0
+        ? '<p class="no-books-message">No favorite books yet. Search above to add books.</p>'
+        : state.teacherFavorites.map((book, index) => `
+            <div class="teacher-favorite-card">
+                ${book.cover ? `<img src="${book.cover}" alt="${book.title}" class="teacher-book-cover">` : '<div class="book-thumbnail-placeholder">📚</div>'}
+                <div class="teacher-favorite-info">
+                    <strong>${book.title}</strong>
+                    <small>by ${book.author || 'Unknown'}</small>
+                </div>
+                <div class="teacher-favorite-actions">
+                    <button class="submit-btn" onclick="openRecommendModal(${index})">Recommend</button>
+                    <button class="cancel-btn" onclick="removeTeacherFavorite(${index})">Remove</button>
+                </div>
+            </div>
+        `).join('');
+
+    contentEl.innerHTML = `
+        <div class="favorites-search-section">
+            <input type="text" id="favorites-book-search" placeholder="Search for a book to add..." class="form-input">
+            <div id="favorites-search-results" class="book-search-results hidden"></div>
+        </div>
+        <div class="teacher-favorites-list">
+            ${favoritesHtml}
+        </div>
+    `;
+
+    // Attach search handler
+    const searchInput = document.getElementById('favorites-book-search');
+    if (searchInput) {
+        searchInput.addEventListener('input', handleFavoritesSearch);
+    }
+}
+
+let favoritesSearchTimeout;
+function handleFavoritesSearch(e) {
+    const query = e.target.value;
+    const resultsEl = document.getElementById('favorites-search-results');
+
+    clearTimeout(favoritesSearchTimeout);
+
+    if (!query.trim()) {
+        resultsEl.classList.add('hidden');
+        return;
+    }
+
+    favoritesSearchTimeout = setTimeout(async () => {
+        try {
+            const response = await fetch(
+                `https://openlibrary.org/search.json?q=${encodeURIComponent(query)}&limit=10`
+            );
+            const data = await response.json();
+
+            if (data.docs && data.docs.length > 0) {
+                resultsEl.innerHTML = data.docs.map((book, index) => {
+                    const title = book.title || 'Unknown Title';
+                    const authors = book.author_name ? book.author_name.join(', ') : 'Unknown';
+                    const coverId = book.cover_i;
+                    const thumbnail = coverId ? `https://covers.openlibrary.org/b/id/${coverId}-M.jpg` : '';
+
+                    return `
+                        <div class="book-result-item favorites-search-item" data-fav-index="${index}">
+                            ${thumbnail ? `<img src="${thumbnail}" alt="${title}" class="book-thumbnail">` : '<div class="book-thumbnail-placeholder">📚</div>'}
+                            <div class="book-info">
+                                <strong>${title}</strong><br>
+                                <small>by ${authors}</small>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                window.currentFavSearchResults = data.docs;
+
+                resultsEl.querySelectorAll('.favorites-search-item').forEach((item, index) => {
+                    item.addEventListener('click', () => {
+                        const book = window.currentFavSearchResults[index];
+                        addTeacherFavorite(book);
+                        resultsEl.classList.add('hidden');
+                        document.getElementById('favorites-book-search').value = '';
+                    });
+                });
+
+                resultsEl.classList.remove('hidden');
+            } else {
+                resultsEl.classList.add('hidden');
+            }
+        } catch (error) {
+            console.error('Error searching books:', error);
+            resultsEl.classList.add('hidden');
+        }
+    }, 500);
+}
+
+function addTeacherFavorite(book) {
+    const title = book.title || 'Unknown Title';
+    const authors = book.author_name ? book.author_name.join(', ') : 'Unknown';
+    const coverId = book.cover_i;
+    const cover = coverId ? `https://covers.openlibrary.org/b/id/${coverId}-M.jpg` : '';
+
+    if (state.teacherFavorites.some(f => f.title === title)) return;
+
+    state.teacherFavorites.push({
+        id: Date.now() + Math.random(),
+        title: title,
+        author: authors,
+        cover: cover,
+        dateAdded: new Date().toISOString()
+    });
+    localStorage.setItem('teacherFavorites', JSON.stringify(state.teacherFavorites));
+    renderTeacherFavorites();
+}
+
+function removeTeacherFavorite(index) {
+    state.teacherFavorites.splice(index, 1);
+    localStorage.setItem('teacherFavorites', JSON.stringify(state.teacherFavorites));
+    renderTeacherFavorites();
+}
+
+// Recommend Book Modal
+function openRecommendModal(favIndex) {
+    const book = state.teacherFavorites[favIndex];
+    if (!book) return;
+
+    window.currentRecommendBook = book;
+
+    document.getElementById('recommend-book-info').innerHTML = `
+        <div class="recommend-book-preview">
+            ${book.cover ? `<img src="${book.cover}" alt="${book.title}" class="teacher-book-cover">` : ''}
+            <div>
+                <strong>${book.title}</strong><br>
+                <small>by ${book.author || 'Unknown'}</small>
+            </div>
+        </div>
+    `;
+
+    const listEl = document.getElementById('recommend-students-list');
+    listEl.innerHTML = state.students.map(student => `
+        <label>
+            <input type="checkbox" name="recommend-student" value="${student.id}" checked>
+            ${student.name}
+        </label>
+    `).join('');
+
+    document.getElementById('recommend-select-all').checked = true;
+    document.getElementById('recommend-book-modal').classList.remove('hidden');
+}
+
+function closeRecommendModal() {
+    document.getElementById('recommend-book-modal').classList.add('hidden');
+    window.currentRecommendBook = null;
+}
+
+function handleRecommendSubmit() {
+    const book = window.currentRecommendBook;
+    if (!book) return;
+
+    const selectedIds = Array.from(
+        document.querySelectorAll('#recommend-students-list input:checked')
+    ).map(cb => parseInt(cb.value));
+
+    selectedIds.forEach(studentId => {
+        if (!state.studentWishlist[studentId]) {
+            state.studentWishlist[studentId] = [];
+        }
+        const alreadyExists = state.studentWishlist[studentId].some(w => w.title === book.title);
+        if (!alreadyExists) {
+            state.studentWishlist[studentId].push({
+                id: Date.now() + Math.random(),
+                title: book.title,
+                author: book.author,
+                cover: book.cover,
+                dateAdded: new Date().toISOString(),
+                recommended: true
+            });
+        }
+    });
+
+    localStorage.setItem('studentWishlist', JSON.stringify(state.studentWishlist));
+    closeRecommendModal();
+}
+
+function closeBookStudentsModal() {
+    document.getElementById('book-students-modal').classList.add('hidden');
 }
 
 // Students Checkbox List for Log Reading

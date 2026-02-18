@@ -12,6 +12,7 @@ let state = {
     challenges: [], // { id, name, description, thumbnail, type, tiers: [{ name, goal, points, icon }], startDate, endDate, createdBy }
     earnedBadges: {}, // { studentId: [{ id, challengeId, tierIndex, dateEarned, badgeName, badgeIcon, startDate, endDate }] }
     studentPoints: {}, // { studentId: { total: N, completed: [{ challengeId, tierIndex, tierName, points, dateEarned }] } }
+    teacherFavorites: [],
     currentPage: 'dashboard',
     selectedBook: null // Temporary storage for selected book from API
 };
@@ -81,6 +82,11 @@ function initializeState() {
     const storedPoints = localStorage.getItem('studentPoints');
     if (storedPoints) {
         state.studentPoints = JSON.parse(storedPoints);
+    }
+
+    const storedFavorites = localStorage.getItem('teacherFavorites');
+    if (storedFavorites) {
+        state.teacherFavorites = JSON.parse(storedFavorites);
     }
 
     // Migrate month/year-based challenges to date range format

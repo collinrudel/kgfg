@@ -2783,3 +2783,171 @@ td {
     background: #fef9f0;
 }
 
+/* Teacher Books Page Tabs */
+.teacher-books-tabs {
+    display: flex;
+    gap: 0;
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid #e0e0e0;
+}
+
+.teacher-books-tab {
+    padding: 0.75rem 1.5rem;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+    color: #666;
+    transition: all 0.2s;
+}
+
+.teacher-books-tab:hover {
+    color: #C41E3A;
+}
+
+.teacher-books-tab.active {
+    color: #C41E3A;
+    border-bottom-color: #C41E3A;
+    font-weight: 600;
+}
+
+.teacher-books-tab-content {
+    display: none;
+}
+
+.teacher-books-tab-content.active {
+    display: block;
+}
+
+/* Clickable Count Links */
+.book-count-link {
+    color: #C41E3A;
+    cursor: pointer;
+    text-decoration: underline;
+    font-weight: 600;
+}
+
+.book-count-link:hover {
+    color: #8B1428;
+}
+
+/* Book Students Modal */
+.book-student-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.book-student-item:last-child {
+    border-bottom: none;
+}
+
+.book-student-rating {
+    color: #C41E3A;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+/* Teacher Favorites */
+.favorites-search-section {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+.favorites-search-section .form-input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 1rem;
+    box-sizing: border-box;
+}
+
+.favorites-search-section .book-search-results {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 10;
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 0 0 8px 8px;
+    max-height: 300px;
+    overflow-y: auto;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.teacher-favorites-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.teacher-favorite-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.teacher-favorite-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.teacher-favorite-info strong {
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+.teacher-favorite-info small {
+    color: #666;
+}
+
+.teacher-favorite-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-shrink: 0;
+}
+
+/* Recommend Book Preview */
+.recommend-book-preview {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: #f9f9f9;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+
+/* Recommended Badge on Wishlist */
+.book-cover {
+    position: relative;
+}
+
+.recommended-badge {
+    position: absolute;
+    top: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #C41E3A;
+    color: white;
+    font-size: 0.65rem;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 10px;
+    white-space: nowrap;
+    z-index: 1;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+

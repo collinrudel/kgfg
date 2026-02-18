@@ -55,6 +55,7 @@ function renderWishlist(studentId) {
     wishlistGrid.innerHTML = wishlist.map(book => `
         <div class="book-card">
             <div class="book-cover">
+                ${book.recommended ? '<div class="recommended-badge">Recommended</div>' : ''}
                 ${book.cover ? `<img src="${book.cover}" alt="${book.title}">` : '<div class="book-cover-placeholder">📚</div>'}
             </div>
             <div class="book-details">
