@@ -1,0 +1,123 @@
+═══════════════════════════════════════════════════════════════
+  Connecting Your GoDaddy Domain - SIMPLE METHOD
+═══════════════════════════════════════════════════════════════
+
+OPTION A: EASIEST METHOD (Using DNS Records - No Nameserver Change)
+-------------------------------------------------------------------
+
+STEP 1: DEPLOY YOUR APP TO NETLIFY
+1. Go to: https://app.netlify.com/drop
+2. Drag your 3 files (index.html, app.js, styles.css) into the page
+3. Your app goes live instantly at something like: random-name-123.netlify.app
+4. Click "Sign Up" to create a free account (keeps your site permanent)
+
+STEP 2: ADD YOUR CUSTOM DOMAIN IN NETLIFY
+1. Once signed in, click on your site
+2. Click "Domain Settings" or "Set up a custom domain"
+3. Click "Add custom domain"
+4. Type your domain (example: mrrudel.com)
+5. Netlify will show you what DNS records to add
+
+STEP 3: UPDATE GODADDY DNS (Keep Your GoDaddy Nameservers!)
+1. Log into GoDaddy.com
+2. Go to: My Products → Domains
+3. Click your domain → DNS (or "Manage DNS")
+4. You'll see a section called "Records"
+
+5. ADD THESE RECORDS (Netlify will give you the exact values):
+
+   For ROOT domain (example.com):
+   --------------------------------
+   Type: A
+   Name: @ (or leave blank)
+   Value: 75.2.60.5 (Netlify's IP - they'll show you this)
+   TTL: 600
+
+   For WWW subdomain (www.example.com):
+   ------------------------------------
+   Type: CNAME
+   Name: www
+   Value: your-site-name.netlify.app
+   TTL: 600
+
+6. Click "Save"
+7. Wait 10-60 minutes for DNS to update
+8. Your site will be live at your domain!
+
+
+OPTION B: CHANGE NAMESERVERS (More Advanced)
+-------------------------------------------------------------------
+
+ONLY DO THIS IF OPTION A DOESN'T WORK FOR YOU
+
+Netlify's Nameservers (if you choose Netlify DNS):
+   dns1.p01.nsone.net
+   dns2.p01.nsone.net
+   dns3.p01.nsone.net
+   dns4.p01.nsone.net
+
+Cloudflare's Nameservers (if you choose Cloudflare):
+   (They give you custom ones when you sign up - usually like:)
+   bob.ns.cloudflare.com
+   jane.ns.cloudflare.com
+
+To Change Nameservers in GoDaddy:
+1. Log into GoDaddy
+2. My Products → Domains → Your Domain
+3. Scroll to "Additional Settings"
+4. Click "Manage DNS"
+5. Scroll to "Nameservers"
+6. Click "Change"
+7. Select "Enter my own nameservers (advanced)"
+8. Enter the nameservers from your hosting provider
+9. Save
+10. Wait 24-48 hours (usually faster)
+
+
+WHICH METHOD SHOULD YOU USE?
+-------------------------------------------------------------------
+→ Use OPTION A (DNS Records) - It's easier and faster!
+→ You keep control of your domain in GoDaddy
+→ Only takes 10-60 minutes to work (not 24-48 hours)
+
+
+TROUBLESHOOTING:
+-------------------------------------------------------------------
+Q: My site isn't loading after I changed DNS
+A: Wait 30-60 minutes. DNS changes take time. Check status at:
+   https://www.whatsmydns.net/
+
+Q: I see "Page not found"
+A: Make sure you uploaded all 3 files (index.html, app.js, styles.css)
+
+Q: The app loads but doesn't work
+A: Open browser console (F12) and check for errors. All 3 files
+   must be in the same folder.
+
+Q: I'm confused about which IP or CNAME to use
+A: Don't worry! When you add your domain in Netlify, it shows you
+   EXACTLY what to enter. Just copy/paste those values.
+
+
+VISUAL GUIDE:
+-------------------------------------------------------------------
+
+Your Domain Journey:
+┌─────────────┐      ┌──────────────┐      ┌─────────────┐
+│   Someone   │──────│   GoDaddy    │──────│   Netlify   │
+│   visits    │      │   DNS says:  │      │   hosts     │
+│  your URL   │      │  "Go there!" │      │  your app   │
+└─────────────┘      └──────────────┘      └─────────────┘
+
+GoDaddy = Your domain registrar (you paid them for the name)
+Netlify = Your hosting (where the files actually live)
+DNS Records = The bridge connecting them
+
+
+NEED MORE HELP?
+-------------------------------------------------------------------
+Once you deploy to Netlify, come back and tell me:
+1. Your Netlify URL (the random-name-123.netlify.app one)
+2. Your GoDaddy domain name
+
+And I can give you the EXACT values to enter in GoDaddy!
