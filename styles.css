@@ -230,25 +230,6 @@ body {
     background: #f5f5f5;
 }
 
-/* Breadcrumb */
-.breadcrumb {
-    padding: 1rem 2rem;
-    background: #f8f9fa;
-    border-bottom: 1px solid #e0e0e0;
-    font-size: 0.9rem;
-    color: #666;
-}
-
-.breadcrumb .separator {
-    color: #999;
-    margin: 0 0.5rem;
-}
-
-.breadcrumb .active {
-    color: #C41E3A;
-    font-weight: 600;
-}
-
 /* Main Content */
 .main-content {
     max-width: 1400px;
@@ -261,6 +242,21 @@ body {
 }
 
 .page.active {
+    display: block;
+}
+
+.page > h2 {
+    margin-bottom: 2rem;
+}
+
+/* My Students & Challenges Tab Content */
+.my-students-tab-content,
+.challenges-tab-content {
+    display: none;
+}
+
+.my-students-tab-content.active,
+.challenges-tab-content.active {
     display: block;
 }
 
@@ -1888,9 +1884,9 @@ td {
 /* Badges & Challenges Styles */
 .badges-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: center;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
 }
 
 .create-challenge-btn {
@@ -2791,7 +2787,9 @@ td {
     border-bottom: 2px solid #e0e0e0;
 }
 
-.teacher-books-tab {
+.teacher-books-tab,
+.my-students-tab,
+.challenges-tab {
     padding: 0.75rem 1.5rem;
     background: none;
     border: none;
@@ -2804,11 +2802,15 @@ td {
     transition: all 0.2s;
 }
 
-.teacher-books-tab:hover {
+.teacher-books-tab:hover,
+.my-students-tab:hover,
+.challenges-tab:hover {
     color: #C41E3A;
 }
 
-.teacher-books-tab.active {
+.teacher-books-tab.active,
+.my-students-tab.active,
+.challenges-tab.active {
     color: #C41E3A;
     border-bottom-color: #C41E3A;
     font-weight: 600;

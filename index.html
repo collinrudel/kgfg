@@ -41,28 +41,13 @@
                 <nav class="main-nav">
                     <a href="#" class="nav-link" data-page="reading">Dashboard</a>
                     <a href="#" class="nav-link" data-page="dashboard">Reports</a>
-                    <div class="nav-item" id="nav-students">
-                        <span class="nav-link">My Students</span>
-                        <div class="dropdown">
-                            <a href="#" data-page="my-class">My Class</a>
-                            <a href="#" data-page="groups">Groups</a>
-                        </div>
-                    </div>
+                    <a href="#" class="nav-link" data-page="my-students">My Students</a>
                     <a href="#" class="nav-link" data-page="teacher-books">Books</a>
-                    <div class="nav-item" id="nav-challenges">
-                        <span class="nav-link">Challenges</span>
-                        <div class="dropdown">
-                            <a href="#" data-page="badges">Badges</a>
-                            <a href="#" data-page="redeem">Redeem</a>
-                        </div>
-                    </div>
+                    <a href="#" class="nav-link" data-page="challenges">Challenges</a>
                 </nav>
                 <button id="teacher-logout-btn" class="logout-btn">Sign Out</button>
             </div>
         </header>
-
-        <!-- Breadcrumb -->
-        <div id="breadcrumb" class="breadcrumb"></div>
 
         <!-- Main Content -->
         <main class="main-content">
@@ -121,28 +106,32 @@
                 </div>
             </div>
 
-            <!-- My Class Page -->
-            <div id="page-my-class" class="page">
-                <h2>My Class</h2>
-                <div class="students-table">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Student Name</th>
-                                <th>Email</th>
-                                <th>Lexile Score</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="students-table-body"></tbody>
-                    </table>
+            <!-- My Students Page -->
+            <div id="page-my-students" class="page">
+                <h2>My Students</h2>
+                <div class="teacher-books-tabs">
+                    <button class="my-students-tab active" data-tab="my-class">My Class</button>
+                    <button class="my-students-tab" data-tab="groups">Groups</button>
                 </div>
-            </div>
-
-            <!-- Groups Page -->
-            <div id="page-groups" class="page">
-                <div class="placeholder-page">
-                    <h1 class="mvp2-text">MVP 2</h1>
+                <div id="my-class-tab" class="my-students-tab-content active">
+                    <div class="students-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Student Name</th>
+                                    <th>Email</th>
+                                    <th>Lexile Score</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="students-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div id="groups-tab" class="my-students-tab-content">
+                    <div class="placeholder-page">
+                        <h1 class="mvp2-text">MVP 2</h1>
+                    </div>
                 </div>
             </div>
 
@@ -161,21 +150,25 @@
                 </div>
             </div>
 
-            <!-- Badges Page -->
-            <div id="page-badges" class="page">
-                <div class="badges-header">
-                    <h2>Challenges & Badges</h2>
-                    <button id="create-challenge-btn" class="create-challenge-btn">+ Create Challenge</button>
+            <!-- Challenges Page -->
+            <div id="page-challenges" class="page">
+                <h2>Challenges</h2>
+                <div class="teacher-books-tabs">
+                    <button class="challenges-tab active" data-tab="badges">Badges</button>
+                    <button class="challenges-tab" data-tab="redeem">Redeem</button>
                 </div>
-                <div id="teacher-challenges-list" class="teacher-challenges-list">
-                    <p class="no-challenges-message">No challenges created yet. Click "Create Challenge" to get started!</p>
+                <div id="badges-tab" class="challenges-tab-content active">
+                    <div class="badges-header">
+                        <button id="create-challenge-btn" class="create-challenge-btn">+ Create Challenge</button>
+                    </div>
+                    <div id="teacher-challenges-list" class="teacher-challenges-list">
+                        <p class="no-challenges-message">No challenges created yet. Click "Create Challenge" to get started!</p>
+                    </div>
                 </div>
-            </div>
-
-            <!-- Redeem Page -->
-            <div id="page-redeem" class="page">
-                <div class="placeholder-page">
-                    <h1 class="mvp2-text">MVP 2</h1>
+                <div id="redeem-tab" class="challenges-tab-content">
+                    <div class="placeholder-page">
+                        <h1 class="mvp2-text">MVP 2</h1>
+                    </div>
                 </div>
             </div>
         </main>

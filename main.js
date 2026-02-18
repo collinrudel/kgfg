@@ -226,8 +226,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Navigation - standalone nav links and dropdown links
-    document.querySelectorAll('.dropdown a, .main-nav > a.nav-link[data-page]').forEach(link => {
+    // Navigation
+    document.querySelectorAll('.main-nav > a.nav-link[data-page]').forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
             const page = e.target.getAttribute('data-page');
@@ -297,24 +297,30 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Month selector
-    document.getElementById('month-selector').addEventListener('change', handleMonthChange);
-
-    // Dropdown menu click behavior (Teacher)
-    document.querySelectorAll('.nav-item').forEach(navItem => {
-        const dropdown = navItem.querySelector('.dropdown');
-        const navLink = navItem.querySelector('.nav-link');
-        
-        navLink.addEventListener('click', (e) => {
-            e.stopPropagation();
-            // Close all other dropdowns
-            document.querySelectorAll('.nav-item .dropdown').forEach(dd => {
-                if (dd !== dropdown) dd.style.display = 'none';
-            });
-            // Toggle current dropdown
-            dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+    // My Students Page Tabs
+    document.querySelectorAll('.my-students-tab').forEach(tab => {
+        tab.addEventListener('click', (e) => {
+            const tabName = e.target.getAttribute('data-tab');
+            document.querySelectorAll('.my-students-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.my-students-tab-content').forEach(c => c.classList.remove('active'));
+            e.target.classList.add('active');
+            document.getElementById(`${tabName}-tab`).classList.add('active');
         });
     });
+
+    // Challenges Page Tabs
+    document.querySelectorAll('.challenges-tab').forEach(tab => {
+        tab.addEventListener('click', (e) => {
+            const tabName = e.target.getAttribute('data-tab');
+            document.querySelectorAll('.challenges-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.challenges-tab-content').forEach(c => c.classList.remove('active'));
+            e.target.classList.add('active');
+            document.getElementById(`${tabName}-tab`).classList.add('active');
+        });
+    });
+
+    // Month selector
+    document.getElementById('month-selector').addEventListener('change', handleMonthChange);
 
     // Edit Goal Button
     const editGoalBtn = document.getElementById('edit-goal-btn');

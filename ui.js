@@ -17,9 +17,6 @@ function navigateToPage(pageName) {
         pageEl.classList.add('active');
     }
     
-    // Update breadcrumb
-    updateBreadcrumb(pageName);
-    
     // Update data if needed
     if (pageName === 'dashboard') {
         renderBooksFinishedChart();
@@ -27,35 +24,13 @@ function navigateToPage(pageName) {
     } else if (pageName === 'reading') {
         populateMonthSelector();
         handleMonthChange();
-    } else if (pageName === 'my-class') {
+    } else if (pageName === 'my-students') {
         renderStudentsTable();
     } else if (pageName === 'teacher-books') {
         renderTeacherBooksPage();
-    } else if (pageName === 'badges') {
+    } else if (pageName === 'challenges') {
         renderTeacherBadgesPage();
     }
-}
-
-function updateBreadcrumb(pageName) {
-    const breadcrumbMap = {
-        'dashboard': ['Reports'],
-        'reading': ['Dashboard'],
-        'my-class': ['My Students', 'My Class'],
-        'groups': ['My Students', 'Groups'],
-        'teacher-books': ['Books'],
-        'badges': ['Challenges', 'Badges'],
-        'redeem': ['Challenges', 'Redeem']
-    };
-    
-    const crumbs = breadcrumbMap[pageName] || [];
-    const breadcrumbEl = document.getElementById('breadcrumb');
-    
-    breadcrumbEl.innerHTML = crumbs.map((crumb, index) => {
-        const isLast = index === crumbs.length - 1;
-        const separator = index > 0 ? '<span class="separator">/</span>' : '';
-        const className = isLast ? 'active' : '';
-        return `${separator}<span class="${className}">${crumb}</span>`;
-    }).join('');
 }
 
 function showTeacherApp() {
