@@ -10,7 +10,7 @@ function handleLogin(e) {
     const errorEl = document.getElementById('login-error');
 
     // Check teacher login
-    if (username === 'teacher_user' && password === 'teacher2023#') {
+    if (username === 'jayrudel' && password === 'teacher123') {
         state.user = { username, role: 'teacher' };
         localStorage.setItem('user', JSON.stringify(state.user));
         errorEl.classList.add('hidden');
