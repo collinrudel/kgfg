@@ -315,11 +315,9 @@ function updateTeacherProgressBar() {
 function updateStudentProgressBar() {
     if (!state.user || state.user.role !== 'student') return;
 
-    const studentLogs = state.readingLogs.filter(log => log.studentId === state.user.studentId);
-    const now = new Date();
-    const studentMinutes = calculateMinutesForPeriod(studentLogs, 'month', now);
+    const classMinutes = calculateClassMonthlyMinutes();
     const goal = getMonthlyGoal();
-    updateProgressBar(studentMinutes, goal, 'student-vehicle-marker', 'student-progress-text');
+    updateProgressBar(classMinutes, goal, 'student-vehicle-marker', 'student-progress-text');
 }
 
 function updateAllProgressBars() {
