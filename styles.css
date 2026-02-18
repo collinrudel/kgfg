@@ -2744,3 +2744,42 @@ td {
     border-color: #3498db;
 }
 
+/* Teacher Books Page */
+.teacher-book-title-cell {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.teacher-book-cover {
+    width: 40px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    flex-shrink: 0;
+}
+
+.no-books-message {
+    text-align: center;
+    color: #666;
+    padding: 2rem;
+    font-size: 1.1rem;
+}
+
+/* Class Books Divider in Search Results */
+.class-books-divider {
+    padding: 0.5rem 0.75rem;
+    background: #f0f0f0;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.class-book-item {
+    background: #fef9f0;
+}
+

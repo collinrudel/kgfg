@@ -29,6 +29,8 @@ function navigateToPage(pageName) {
         handleMonthChange();
     } else if (pageName === 'my-class') {
         renderStudentsTable();
+    } else if (pageName === 'teacher-books') {
+        renderTeacherBooksPage();
     } else if (pageName === 'badges') {
         renderTeacherBadgesPage();
     }
@@ -40,6 +42,7 @@ function updateBreadcrumb(pageName) {
         'reading': ['Dashboard'],
         'my-class': ['My Students', 'My Class'],
         'groups': ['My Students', 'Groups'],
+        'teacher-books': ['Books'],
         'badges': ['Challenges', 'Badges'],
         'redeem': ['Challenges', 'Redeem']
     };
@@ -234,6 +237,74 @@ function renderStudentsTable() {
     `).join('');
 }
 
+// Teacher Books Page
+function getClassBooksData() {
+    const booksMap = {};
+    for (const studentId in state.studentBooks) {
+        const books = state.studentBooks[studentId];
+        for (const book of books) {
+            const key = book.title;
+            if (!booksMap[key]) {
+                booksMap[key] = {
+                    title: book.title,
+                    author: book.author,
+                    cover: book.cover,
+                    readingCount: 0,
+                    finishedCount: 0
+                };
+            }
+            if (book.status === 'Reading') {
+                booksMap[key].readingCount++;
+            } else if (book.status === 'Finished') {
+                booksMap[key].finishedCount++;
+            }
+        }
+    }
+    return Object.values(booksMap).sort((a, b) => {
+        if (b.readingCount !== a.readingCount) return b.readingCount - a.readingCount;
+        if (b.finishedCount !== a.finishedCount) return b.finishedCount - a.finishedCount;
+        return a.title.localeCompare(b.title);
+    });
+}
+
+function renderTeacherBooksPage() {
+    const listEl = document.getElementById('teacher-books-list');
+    const books = getClassBooksData();
+
+    if (books.length === 0) {
+        listEl.innerHTML = '<p class="no-books-message">No books have been logged yet.</p>';
+        return;
+    }
+
+    listEl.innerHTML = `
+        <div class="students-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Book</th>
+                        <th>Author</th>
+                        <th>Currently Reading</th>
+                        <th>Finished</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${books.map(book => `
+                        <tr>
+                            <td class="teacher-book-title-cell">
+                                ${book.cover ? `<img src="${book.cover}" alt="${book.title}" class="teacher-book-cover">` : ''}
+                                <span>${book.title}</span>
+                            </td>
+                            <td>${book.author || 'Unknown'}</td>
+                            <td>${book.readingCount}</td>
+                            <td>${book.finishedCount}</td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+        </div>
+    `;
+}
+
 // Students Checkbox List for Log Reading
 function renderStudentsCheckboxList() {
     const listEl = document.getElementById('students-checkbox-list');
@@ -386,28 +457,79 @@ function handleLogReadingSubmit(e) {
 }
 
 // Book Search with Open Library API
+function getClassBookSuggestions(query) {
+    const classBooks = getClassBooksData();
+    const lowerQuery = query.toLowerCase();
+    const matching = classBooks.filter(b => b.title.toLowerCase().includes(lowerQuery));
+    // Sort: currently reading first, then finished-only
+    return matching.sort((a, b) => {
+        if (b.readingCount !== a.readingCount) return b.readingCount - a.readingCount;
+        if (b.finishedCount !== a.finishedCount) return b.finishedCount - a.finishedCount;
+        return a.title.localeCompare(b.title);
+    });
+}
+
+function renderClassBookItem(book, index) {
+    return `
+        <div class="book-result-item class-book-item" data-class-book-index="${index}">
+            ${book.cover ? `<img src="${book.cover}" alt="${book.title}" class="book-thumbnail">` : '<div class="book-thumbnail-placeholder">📚</div>'}
+            <div class="book-info">
+                <strong>${book.title}</strong><br>
+                <small>by ${book.author || 'Unknown'}</small>
+            </div>
+        </div>
+    `;
+}
+
 let searchTimeout;
 function handleBookSearch(e) {
     const query = e.target.value;
     const resultsEl = document.getElementById('book-search-results');
-    
+
     clearTimeout(searchTimeout);
-    
+
     if (!query.trim()) {
         resultsEl.classList.add('hidden');
         return;
     }
-    
+
+    // Show class book matches immediately
+    const classSuggestions = getClassBookSuggestions(query);
+    if (classSuggestions.length > 0) {
+        resultsEl.innerHTML = '<div class="class-books-divider">Class Books</div>' +
+            classSuggestions.map((book, i) => renderClassBookItem(book, i)).join('');
+        window.currentClassBookResults = classSuggestions;
+        resultsEl.querySelectorAll('.class-book-item').forEach((item, i) => {
+            item.addEventListener('click', () => {
+                const book = window.currentClassBookResults[i];
+                selectClassBook(book);
+            });
+        });
+        resultsEl.classList.remove('hidden');
+    }
+
     searchTimeout = setTimeout(async () => {
         try {
-            // Using Open Library API (free, no rate limits)
             const response = await fetch(
                 `https://openlibrary.org/search.json?q=${encodeURIComponent(query)}&limit=10`
             );
             const data = await response.json();
-            
+
+            let html = '';
+
+            // Prepend class books
+            const classMatches = getClassBookSuggestions(query);
+            if (classMatches.length > 0) {
+                html += '<div class="class-books-divider">Class Books</div>';
+                html += classMatches.map((book, i) => renderClassBookItem(book, i)).join('');
+                window.currentClassBookResults = classMatches;
+            }
+
             if (data.docs && data.docs.length > 0) {
-                resultsEl.innerHTML = data.docs.map((book, index) => {
+                if (classMatches.length > 0) {
+                    html += '<div class="class-books-divider">Search Results</div>';
+                }
+                html += data.docs.map((book, index) => {
                     const title = book.title || 'Unknown Title';
                     const authors = book.author_name ? book.author_name.join(', ') : 'Unknown';
                     const coverId = book.cover_i;
@@ -424,11 +546,23 @@ function handleBookSearch(e) {
                     `;
                 }).join('');
 
-                // Store books data temporarily for selection
                 window.currentBookSearchResults = data.docs;
+            }
 
-                // Add click handlers
-                document.querySelectorAll('.book-result-item').forEach((item, index) => {
+            if (html) {
+                resultsEl.innerHTML = html;
+
+                // Add click handlers for class books
+                resultsEl.querySelectorAll('.class-book-item').forEach((item, i) => {
+                    item.addEventListener('click', () => {
+                        const book = window.currentClassBookResults[i];
+                        selectClassBook(book);
+                    });
+                });
+
+                // Add click handlers for API results
+                resultsEl.querySelectorAll('.book-result-item:not(.class-book-item)').forEach((item) => {
+                    const index = parseInt(item.getAttribute('data-book-index'));
                     item.addEventListener('click', () => {
                         const book = window.currentBookSearchResults[index];
                         selectBook(book);
@@ -441,9 +575,22 @@ function handleBookSearch(e) {
             }
         } catch (error) {
             console.error('Error searching books:', error);
-            resultsEl.classList.add('hidden');
+            // Keep class book results visible if they exist
+            if (!resultsEl.querySelector('.class-book-item')) {
+                resultsEl.classList.add('hidden');
+            }
         }
     }, 500);
+}
+
+function selectClassBook(book) {
+    state.selectedBook = {
+        title: book.title,
+        author: book.author,
+        cover: book.cover
+    };
+    document.getElementById('book-title').value = book.title;
+    document.getElementById('book-search-results').classList.add('hidden');
 }
 
 function selectBook(book) {
@@ -452,14 +599,12 @@ function selectBook(book) {
     const coverId = book.cover_i;
     const cover = coverId ? `https://covers.openlibrary.org/b/id/${coverId}-M.jpg` : '';
 
-    // Store selected book metadata in state
     state.selectedBook = {
         title: title,
         author: authors,
         cover: cover
     };
 
-    // Update the input field
     document.getElementById('book-title').value = title;
     document.getElementById('book-search-results').classList.add('hidden');
 }
