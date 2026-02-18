@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mr. Rudel's Class</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="login-screen" class="screen active">
+        <div class="login-container">
+            <div class="login-box">
+                <img src="kgfg-logo.png" alt="Ken Garff for Good" class="login-logo">
+                <h1>Login</h1>
+                <form id="login-form">
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input type="text" id="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" required>
+                    </div>
+                    <div id="login-error" class="error hidden"></div>
+                    <button type="submit" class="login-button">Login</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main App Screen -->
+    <div id="app-screen" class="screen">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <img src="kgfg-logo.png" alt="Ken Garff for Good" class="header-logo">
+                </div>
+                <h1 class="class-title">Mr. Rudel's Class</h1>
+                <nav class="main-nav">
+                    <a href="#" class="nav-link" data-page="reading">Dashboard</a>
+                    <a href="#" class="nav-link" data-page="dashboard">Reports</a>
+                    <div class="nav-item" id="nav-students">
+                        <span class="nav-link">My Students</span>
+                        <div class="dropdown">
+                            <a href="#" data-page="my-class">My Class</a>
+                            <a href="#" data-page="groups">Groups</a>
+                        </div>
+                    </div>
+                    <div class="nav-item" id="nav-challenges">
+                        <span class="nav-link">Challenges</span>
+                        <div class="dropdown">
+                            <a href="#" data-page="badges">Badges</a>
+                            <a href="#" data-page="redeem">Redeem</a>
+                        </div>
+                    </div>
+                </nav>
+                <button id="teacher-logout-btn" class="logout-btn">Sign Out</button>
+            </div>
+        </header>
+
+        <!-- Breadcrumb -->
+        <div id="breadcrumb" class="breadcrumb"></div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Reports Page -->
+            <div id="page-dashboard" class="page">
+                <h2>Reports</h2>
+
+                <div class="reports-container">
+                    <div class="report-box">
+                        <h3>Books Finished by Month</h3>
+                        <p class="report-subtitle">School Year 2025-26</p>
+                        <div class="bar-chart" id="books-finished-chart">
+                            <!-- Bars will be rendered by JavaScript -->
+                        </div>
+                    </div>
+                    <div class="report-box">
+                        <h3>Badges Earned by Month</h3>
+                        <p class="report-subtitle">School Year 2025-26</p>
+                        <div class="bar-chart" id="badges-earned-chart">
+                            <!-- Bars will be rendered by JavaScript -->
+                        </div>
+                    </div>
+                    <div class="report-box">
+                        <h3>Report 3</h3>
+                        <p>Input report here</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reading Page -->
+            <div id="page-reading" class="page">
+                <div class="button-container">
+                    <select id="month-selector" class="month-selector"></select>
+                    <button id="log-reading-btn" class="log-reading-btn">Log Reading</button>
+                    <button class="review-btn">Review</button>
+                </div>
+
+                <!-- Class Reading Progress -->
+                <div class="class-progress-container">
+                    <h3 id="progress-bar-title">Class Reading Progress - This Month</h3>
+                    <div class="road-progress-wrapper">
+                        <div class="road-progress-bar">
+                            <div class="road-stripes"></div>
+                            <div class="vehicle-marker vehicle-car" id="teacher-vehicle-marker" style="left: 0%;">🚙</div>
+                        </div>
+                        <div class="progress-info">
+                            <span id="teacher-progress-text" class="progress-minutes">0 / 1000 minutes</span>
+                            <button id="edit-goal-btn" class="edit-goal-btn">Edit Goal</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="leaderboard">
+                    <h2>Reading Leaderboard</h2>
+                    <div id="leaderboard-list" class="leaderboard-list"></div>
+                </div>
+            </div>
+
+            <!-- My Class Page -->
+            <div id="page-my-class" class="page">
+                <h2>My Class</h2>
+                <div class="students-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Student Name</th>
+                                <th>Email</th>
+                                <th>Lexile Score</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="students-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Groups Page -->
+            <div id="page-groups" class="page">
+                <div class="placeholder-page">
+                    <h1 class="mvp2-text">MVP 2</h1>
+                </div>
+            </div>
+
+            <!-- Badges Page -->
+            <div id="page-badges" class="page">
+                <div class="badges-header">
+                    <h2>Challenges & Badges</h2>
+                    <button id="create-challenge-btn" class="create-challenge-btn">+ Create Challenge</button>
+                </div>
+                <div id="teacher-challenges-list" class="teacher-challenges-list">
+                    <p class="no-challenges-message">No challenges created yet. Click "Create Challenge" to get started!</p>
+                </div>
+            </div>
+
+            <!-- Redeem Page -->
+            <div id="page-redeem" class="page">
+                <div class="placeholder-page">
+                    <h1 class="mvp2-text">MVP 2</h1>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Log Reading Modal -->
+    <div id="log-reading-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <h2>Log Reading</h2>
+            <form id="log-reading-form">
+                <div class="form-group">
+                    <label>Students who read</label>
+                    <div class="checkbox-header">
+                        <label>
+                            <input type="checkbox" id="select-all-students" checked>
+                            Select All
+                        </label>
+                    </div>
+                    <div id="students-checkbox-list" class="students-checkbox-list"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="minutes">Minutes *</label>
+                    <input type="number" id="minutes" min="1" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Free reading? *</label>
+                    <div class="radio-group">
+                        <label>
+                            <input type="radio" name="freeReading" value="no" checked>
+                            No
+                        </label>
+                        <label>
+                            <input type="radio" name="freeReading" value="yes">
+                            Yes
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group" id="book-title-group">
+                    <label for="book-title">Book title *</label>
+                    <input type="text" id="book-title" placeholder="Search for a book...">
+                    <div id="book-search-results" class="book-search-results hidden"></div>
+                </div>
+
+                <div class="form-group" id="book-finished-group">
+                    <label>Book finished?</label>
+                    <div class="radio-group">
+                        <label>
+                            <input type="radio" name="bookFinished" value="no" checked>
+                            No
+                        </label>
+                        <label>
+                            <input type="radio" name="bookFinished" value="yes">
+                            Yes
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="date-read">Date read *</label>
+                    <input type="date" id="date-read" required>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" id="cancel-log-btn" class="cancel-btn">Cancel</button>
+                    <button type="submit" class="submit-btn">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Student Modal -->
+    <div id="edit-student-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <h2>Edit Student</h2>
+            <form id="edit-student-form">
+                <input type="hidden" id="edit-student-id">
+                <div class="form-group">
+                    <label for="edit-name">Student Name</label>
+                    <input type="text" id="edit-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-email">Email</label>
+                    <input type="email" id="edit-email" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-lexile">Lexile Score</label>
+                    <input type="text" id="edit-lexile" placeholder="e.g., 725L" required>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" id="cancel-edit-btn" class="cancel-btn">Cancel</button>
+                    <button type="submit" class="submit-btn">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Student App Screen -->
+    <div id="student-app-screen" class="screen">
+        <header class="student-header">
+            <div class="header-content">
+                <img src="kgfg-logo.png" alt="Ken Garff for Good" class="student-header-logo">
+                <span id="student-name-header" class="student-name-display"></span>
+                <nav class="student-nav">
+                    <a href="#" class="student-nav-link" data-page="reading-minutes">
+                        Reading
+                        <span class="streak-badge">🔥<span id="header-streak-number">0</span></span>
+                    </a>
+                    <a href="#" class="student-nav-link" data-page="books">Books</a>
+                    <a href="#" class="student-nav-link" data-page="badges">Badges</a>
+                    <a href="#" class="student-nav-link" data-page="milestones">Milestones</a>
+                </nav>
+                <span class="student-points-badge" id="student-points-display">0 pts</span>
+                <button id="student-logout-btn" class="logout-btn">Sign Out</button>
+            </div>
+        </header>
+
+        <div class="student-container">
+            <!-- Reading Minutes Page -->
+            <div id="reading-minutes-page" class="student-page active">
+                <div class="page-header">
+                    <h2>My Reading</h2>
+                    <button id="student-log-reading-btn" class="log-reading-btn">Log Reading</button>
+                </div>
+
+                <div class="student-stats">
+                    <div class="stat-card">
+                        <div class="stat-icon">📖</div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="minutes-this-week">0</div>
+                            <div class="stat-label">Minutes Read This Week</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">📆</div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="minutes-this-month">0</div>
+                            <div class="stat-label">Minutes Read This Month</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🗓️</div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="minutes-this-year">0</div>
+                            <div class="stat-label">Minutes Read This Year</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🔥</div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="reading-streak">0</div>
+                            <div class="stat-label">Current Reading Streak</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Student Reading Progress -->
+                <div class="student-progress-container">
+                    <h3>Class Reading Goal</h3>
+                    <div class="road-progress-wrapper">
+                        <div class="road-progress-bar">
+                            <div class="road-stripes"></div>
+                            <div class="vehicle-marker vehicle-bike" id="student-vehicle-marker" style="left: 0%;">🚲</div>
+                        </div>
+                        <div class="progress-info">
+                            <span id="student-progress-text" class="progress-minutes">0 / 1000 minutes</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="student-section">
+                    <h3>Reading Log</h3>
+                    <div class="table-container">
+                        <table class="student-table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Book</th>
+                                    <th>Minutes</th>
+                                    <th>Logged by</th>
+                                </tr>
+                            </thead>
+                            <tbody id="student-reading-logs">
+                                <tr>
+                                    <td colspan="4" style="text-align: center; padding: 20px;">No reading logs yet</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div id="reading-log-pagination" class="pagination"></div>
+                </div>
+            </div>
+
+            <!-- Books Page -->
+            <div id="books-page" class="student-page">
+                <div class="books-tabs">
+                    <button class="books-tab active" data-tab="my-books">My Books</button>
+                    <button class="books-tab" data-tab="wishlist">Wishlist</button>
+                    <button class="books-tab" data-tab="reading-history">Reading History</button>
+                </div>
+
+                <!-- My Books Tab -->
+                <div id="my-books-tab" class="books-tab-content active">
+                    <div class="books-grid" id="my-books-grid">
+                        <p class="no-books-message">No books yet. Start reading to add books here!</p>
+                    </div>
+                </div>
+
+                <!-- Wishlist Tab -->
+                <div id="wishlist-tab" class="books-tab-content">
+                    <div class="wishlist-search-section">
+                        <h3>Add Books to Wishlist</h3>
+                        <div class="search-box">
+                            <input type="text" id="wishlist-search-input" placeholder="Search for books...">
+                            <div id="wishlist-search-results" class="wishlist-search-results"></div>
+                        </div>
+                    </div>
+                    <div class="books-grid" id="wishlist-grid">
+                        <p class="no-books-message">No books in your wishlist yet. Search and add books above!</p>
+                    </div>
+                </div>
+
+                <!-- Reading History Tab -->
+                <div id="reading-history-tab" class="books-tab-content">
+                    <div class="books-grid" id="reading-history-grid">
+                        <p class="no-books-message">No finished books yet. Keep reading!</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Badges Page -->
+            <div id="badges-page" class="student-page">
+                <div class="badges-tabs">
+                    <button class="badges-tab active" data-tab="earned-badges">My Earned Badges</button>
+                    <button class="badges-tab" data-tab="challenges">Challenges</button>
+                </div>
+
+                <!-- My Earned Badges Tab -->
+                <div id="earned-badges-tab" class="badges-tab-content active">
+                    <div id="earned-badges-grid" class="earned-badges-grid">
+                        <p class="no-badges-message">No badges earned yet. Complete challenges to earn badges!</p>
+                    </div>
+                </div>
+
+                <!-- Challenges Tab -->
+                <div id="challenges-tab" class="badges-tab-content">
+                    <div class="challenges-section">
+                        <h3>Active Challenges</h3>
+                        <div id="active-challenges-list" class="challenges-list">
+                            <p class="no-challenges-message">No active challenges this month.</p>
+                        </div>
+                    </div>
+
+                    <div class="challenges-section">
+                        <h3>Past Challenges</h3>
+                        <div id="past-challenges-list" class="challenges-list">
+                            <p class="no-challenges-message">No past challenges yet.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Milestones Page -->
+            <div id="milestones-page" class="student-page">
+                <div class="milestones-header">
+                    <h2>Milestones</h2>
+                    <p class="milestones-subtitle">Track your reading achievements and unlock rewards!</p>
+                    <div class="milestone-tiers">
+                        <div class="tier-badge" style="background: #CD7F32;">
+                            <span class="tier-icon">🥉</span>
+                            <span class="tier-name">Bronze</span>
+                        </div>
+                        <div class="tier-badge" style="background: #C0C0C0;">
+                            <span class="tier-icon">🥈</span>
+                            <span class="tier-name">Silver</span>
+                        </div>
+                        <div class="tier-badge" style="background: #FFD700;">
+                            <span class="tier-icon">🥇</span>
+                            <span class="tier-name">Gold</span>
+                        </div>
+                        <div class="tier-badge" style="background: #00BFFF;">
+                            <span class="tier-icon">💎</span>
+                            <span class="tier-name">Legendary</span>
+                        </div>
+                        <div class="tier-badge tier-badge-rainbow">
+                            <span class="tier-icon">👑</span>
+                            <span class="tier-name">Mythic</span>
+                        </div>
+                    </div>
+                </div>
+                <div id="milestones-container" class="milestones-list">
+                    <!-- Milestones will be rendered here by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Student Log Reading Modal -->
+    <div id="student-log-reading-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <h2>Log Reading</h2>
+
+            <!-- Mode toggle -->
+            <div class="log-mode-toggle">
+                <button type="button" class="log-mode-btn active" data-mode="manual" id="log-mode-manual-btn">Enter Minutes</button>
+                <button type="button" class="log-mode-btn" data-mode="timer" id="log-mode-timer-btn">Use Timer</button>
+            </div>
+
+            <form id="student-log-reading-form">
+                <!-- Manual mode: date field -->
+                <div class="form-group" id="manual-date-group">
+                    <label for="student-reading-date">Date *</label>
+                    <input type="date" id="student-reading-date" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="student-book-title">Book Title *</label>
+                    <input type="text" id="student-book-title" placeholder="Search for a book..." required>
+                    <div id="student-book-results" class="book-results"></div>
+                </div>
+
+                <!-- Manual mode: minutes input -->
+                <div class="form-group" id="manual-minutes-group">
+                    <label for="student-minutes-read">Minutes Read *</label>
+                    <input type="number" id="student-minutes-read" min="1" required>
+                </div>
+
+                <!-- Timer mode: timer display -->
+                <div id="timer-group" class="hidden">
+                    <div class="timer-display">
+                        <span id="timer-display-text">00:00</span>
+                    </div>
+                    <div class="timer-controls">
+                        <button type="button" id="timer-start-btn" class="timer-btn timer-start">Start</button>
+                        <button type="button" id="timer-pause-btn" class="timer-btn timer-pause hidden">Pause</button>
+                        <button type="button" id="timer-resume-btn" class="timer-btn timer-resume hidden">Resume</button>
+                        <button type="button" id="timer-end-btn" class="timer-btn timer-end hidden">End Timer</button>
+                    </div>
+                    <p id="timer-result" class="timer-result hidden"></p>
+                </div>
+
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="student-book-finished">
+                        Book finished?
+                    </label>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" id="student-cancel-log-btn" class="cancel-btn">Cancel</button>
+                    <button type="submit" class="submit-btn" id="student-log-submit-btn">Log Reading</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Create Challenge Modal (Teacher) -->
+    <div id="create-challenge-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <h2>Create Challenge</h2>
+            <form id="create-challenge-form">
+                <div class="form-group">
+                    <label for="challenge-name">Challenge Name *</label>
+                    <input type="text" id="challenge-name" required placeholder="e.g., February Reading Sprint">
+                </div>
+
+                <div class="form-group">
+                    <label for="challenge-description">Description</label>
+                    <textarea id="challenge-description" rows="2" placeholder="Optional description students will see..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="challenge-thumbnail">Challenge Thumbnail * (jpg, jpeg, or png)</label>
+                    <input type="file" id="challenge-thumbnail" accept=".jpg,.jpeg,.png" required>
+                    <div id="thumbnail-preview" class="icon-preview hidden">
+                        <img id="thumbnail-preview-img" src="" alt="Thumbnail preview">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="challenge-type">Challenge Type *</label>
+                    <select id="challenge-type" required>
+                        <option value="">Select type...</option>
+                        <option value="minutes">Reading Minutes</option>
+                        <option value="books">Books Read</option>
+                        <option value="streak">Reading Streak (Consecutive Days)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Challenge Organization *</label>
+                    <div class="radio-group">
+                        <label class="radio-label">
+                            <input type="radio" name="challenge-org" value="bsg" checked> Bronze, Silver, Gold
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="challenge-org" value="one"> One-and-Done
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Tiers *</label>
+                    <small id="goal-unit" class="form-hint"></small>
+                    <div id="tiers-container" class="tiers-container"></div>
+                    <button type="button" id="add-tier-btn" class="add-tier-btn hidden">+ Add Tier</button>
+                </div>
+
+                <div class="form-group">
+                    <label for="challenge-start-date">Start Date *</label>
+                    <input type="date" id="challenge-start-date" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="challenge-end-date">End Date *</label>
+                    <input type="date" id="challenge-end-date" required>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" id="cancel-challenge-btn" class="cancel-btn">Cancel</button>
+                    <button type="submit" class="submit-btn">Create Challenge</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Challenge Modal (Teacher) -->
+    <div id="edit-challenge-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <h2>Edit Challenge</h2>
+            <form id="edit-challenge-form">
+                <input type="hidden" id="edit-challenge-id">
+
+                <div class="form-group">
+                    <label for="edit-challenge-name">Challenge Name *</label>
+                    <input type="text" id="edit-challenge-name" required placeholder="e.g., February Reading Sprint">
+                </div>
+
+                <div class="form-group">
+                    <label for="edit-challenge-description">Description</label>
+                    <textarea id="edit-challenge-description" rows="2" placeholder="Optional description students will see..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="edit-challenge-thumbnail">Challenge Thumbnail (leave empty to keep current)</label>
+                    <input type="file" id="edit-challenge-thumbnail" accept=".jpg,.jpeg,.png">
+                    <div id="edit-thumbnail-preview" class="icon-preview">
+                        <img id="edit-thumbnail-preview-img" src="" alt="Thumbnail preview">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="edit-challenge-type">Challenge Type *</label>
+                    <select id="edit-challenge-type" required>
+                        <option value="">Select type...</option>
+                        <option value="minutes">Reading Minutes</option>
+                        <option value="books">Books Read</option>
+                        <option value="streak">Reading Streak (Consecutive Days)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Challenge Organization *</label>
+                    <div class="radio-group">
+                        <label class="radio-label">
+                            <input type="radio" name="edit-challenge-org" value="bsg" checked> Bronze, Silver, Gold
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="edit-challenge-org" value="one"> One-and-Done
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Tiers *</label>
+                    <small id="edit-goal-unit" class="form-hint"></small>
+                    <div id="edit-tiers-container" class="tiers-container"></div>
+                    <button type="button" id="edit-add-tier-btn" class="add-tier-btn hidden">+ Add Tier</button>
+                </div>
+
+                <div class="form-group">
+                    <label for="edit-challenge-start-date">Start Date *</label>
+                    <input type="date" id="edit-challenge-start-date" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="edit-challenge-end-date">End Date *</label>
+                    <input type="date" id="edit-challenge-end-date" required>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" id="cancel-edit-challenge-btn" class="cancel-btn">Cancel</button>
+                    <button type="submit" class="submit-btn">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Chart Detail Modal -->
+    <div id="chart-detail-modal" class="modal-overlay hidden">
+        <div class="modal-content chart-detail-modal-content">
+            <div class="chart-detail-header">
+                <h2 id="chart-detail-title"></h2>
+                <button id="chart-detail-close" class="chart-detail-close-btn">&times;</button>
+            </div>
+            <div id="chart-detail-body" class="chart-detail-body">
+            </div>
+        </div>
+    </div>
+
+    <!-- Celebration Modal -->
+    <div id="celebration-modal" class="celebration-overlay hidden">
+        <div class="celebration-content">
+            <div class="fireworks-container" id="fireworks-container"></div>
+            <div class="balloons-container" id="balloons-container"></div>
+            <div class="celebration-message">
+                <h2 id="celebration-text">Congrats!</h2>
+                <button id="celebration-continue-btn" class="celebration-continue-btn">Continue</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Split JavaScript Files (Load in dependency order) -->
+    <script src="config.js"></script>
+    <script src="state.js"></script>
+    <script src="utils.js"></script>
+    <script src="auth.js"></script>
+    <script src="reading.js"></script>
+    <script src="books.js"></script>
+    <script src="badges.js"></script>
+    <script src="ui.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>
