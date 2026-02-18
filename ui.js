@@ -722,6 +722,31 @@ function renderClassBookItem(book, index) {
     `;
 }
 
+function showAllClassBooks() {
+    const resultsEl = document.getElementById('book-search-results');
+    const allClassBooks = getClassBooksData();
+    if (allClassBooks.length > 0) {
+        let html = '<div class="class-books-divider">Currently Reading</div>';
+        const reading = allClassBooks.filter(b => b.readingCount > 0);
+        const finishedOnly = allClassBooks.filter(b => b.readingCount === 0 && b.finishedCount > 0);
+        html += reading.map((book, i) => renderClassBookItem(book, i)).join('');
+        if (finishedOnly.length > 0) {
+            html += '<div class="class-books-divider">Previously Read</div>';
+            html += finishedOnly.map((book, i) => renderClassBookItem(book, reading.length + i)).join('');
+        }
+        window.currentClassBookResults = [...reading, ...finishedOnly];
+        resultsEl.innerHTML = html;
+        resultsEl.querySelectorAll('.class-book-item').forEach((item, i) => {
+            item.addEventListener('click', () => {
+                selectClassBook(window.currentClassBookResults[i]);
+            });
+        });
+        resultsEl.classList.remove('hidden');
+    } else {
+        resultsEl.classList.add('hidden');
+    }
+}
+
 let searchTimeout;
 function handleBookSearch(e) {
     const query = e.target.value;
@@ -730,7 +755,7 @@ function handleBookSearch(e) {
     clearTimeout(searchTimeout);
 
     if (!query.trim()) {
-        resultsEl.classList.add('hidden');
+        showAllClassBooks();
         return;
     }
 

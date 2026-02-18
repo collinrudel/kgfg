@@ -248,6 +248,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Book search
     document.getElementById('book-title').addEventListener('input', handleBookSearch);
+    document.getElementById('book-title').addEventListener('focus', showAllClassBooks);
     
     // Edit Student
     document.getElementById('cancel-edit-btn').addEventListener('click', closeEditStudentModal);
